@@ -46,15 +46,25 @@
             color: #a94442;
         }
         .slide-banners-container {
-            width: 80%;
-            max-width: 800px;
-            height: auto;
-            min-height: 200px;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            position: block;
+            position: relative;
+            width: 350px;
+            height: 150px;
+            overflow: hidden;
+            margin-right: 175px;
         }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        } 
     </style>
 </head>
 <body>
@@ -84,7 +94,7 @@
             bannersUrl.forEach(bannerUrl => {
                 return slideContainer.append(`
                 <div class="slide">
-                    <img src="${bannerUrl}" class="slide-img" />
+                    <img src="${bannerUrl}" class="slide-img" style="width: 340px; height: 150px;" />
                 </div>
                 `)
             })

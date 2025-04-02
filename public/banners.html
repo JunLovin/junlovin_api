@@ -18,8 +18,8 @@
 
         .slide-banners-container {
             position: relative;
-            width: 340px;
-            height: 120px;
+            width: 350px;
+            height: 150px;
             overflow: hidden;
             margin-right: 175px;
         }
@@ -27,12 +27,15 @@
         .slide {
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
 
         .slide-img {
             width: 100%;
             height: 100%;
-        }
+            object-fit: cover;
+            object-position: center;
+        } 
     </style>
 
 </head>
@@ -48,7 +51,7 @@
             bannersUrl.forEach(bannerUrl => {
                 return slideContainer.append(`
                 <div class="slide">
-                    <img src="${bannerUrl}" class="slide-img" />
+                    <img src="${bannerUrl}" class="slide-img" style="width: 340px; height: 150px;" />
                 </div>
                 `)
             })
