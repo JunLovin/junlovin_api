@@ -51,7 +51,7 @@
             bannersUrl.forEach(bannerUrl => {
                 return slideContainer.append(`
                 <div class="slide">
-                    <img src="${bannerUrl}" class="slide-img" style="width: 340px; height: 150px;" />
+                    <img src="${bannerUrl.url}" data-id="${bannerUrl.id}" class="slide-img" style="width: 340px; height: 150px;" />
                 </div>
                 `)
             })

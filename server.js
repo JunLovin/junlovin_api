@@ -24,8 +24,30 @@ app.get('/api/banners', (req, res) => {
             error.status = 500
             return next(error)
         }
-        const bannersUrl = banners.map(banner => `/banners/${banner}`)
-        return res.json(bannersUrl)
+        const bannersConId = banners.map(banner => ({
+            id: banner,
+            url: `/banners/${banner}`
+        }))
+        return res.json(bannersConId)
+    })
+})
+
+app.delete('/api/banners/:id', (req, res) => {
+    const bannerId = req.params.id
+    const rutaBanner = path.join(__dirname, 'public', 'banners', bannerId)
+
+    fs.access(rutaBanner, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ error: 'Banner no encontrado' })
+        }
+
+        fs.unlink(rutaBanner, (err) => {
+            if (err) {
+                return res.status(500).json({ error: 'Error al eliminar el banner' })
+            }
+
+            return res.json({ success: true, message: 'Banner eliminado correctamente.' })
+        })
     })
 })
 

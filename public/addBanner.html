@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Banner</title>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <style>
         .banner-form {
@@ -14,11 +17,13 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .banner-form input[type="text"] {
             width: 70%;
             padding: 8px;
             margin-right: 10px;
         }
+
         .banner-form button {
             padding: 8px 15px;
             background-color: #4CAF50;
@@ -27,46 +32,77 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         .slide-banners-container img {
             max-width: 100%;
             height: auto;
             margin: 10px 0;
         }
+
         .message {
             padding: 10px;
             margin: 10px 0;
             border-radius: 4px;
         }
+
         .success {
             background-color: #dff0d8;
             color: #3c763d;
         }
+
         .error {
             background-color: #f2dede;
             color: #a94442;
         }
+
         .slide-banners-container {
-            position: relative;
-            width: 350px;
-            height: 150px;
-            overflow: hidden;
-            margin-right: 175px;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+
+        .banner-item {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
+            width: 350px;
+            height: 150px;
             overflow: hidden;
+            margin-bottom: 10px;
         }
 
         .slide-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center;
-        } 
+            object-fit: fill;
+        }
+
+        .banner-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .delete-banner {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
     </style>
 </head>
+
 <body>
     <div class="banner-form">
         <h2>Agregar nuevo banner</h2>
@@ -74,9 +110,10 @@
         <button id="agregarBanner">Agregar</button>
         <div id="contenedorMensaje"></div>
     </div>
-    
+
     <h2>Banners actuales</h2>
     <div class="slide-banners-container"></div>
+    <div class="slide-banners-controls"></div>
     <script>
         const cambiarImagen = async () => {
             const respuesta = await fetch(`/api/banners`, { method: 'GET' })
@@ -93,77 +130,105 @@
 
             bannersUrl.forEach(bannerUrl => {
                 return slideContainer.append(`
-                <div class="slide">
-                    <img src="${bannerUrl}" class="slide-img" style="width: 340px; height: 150px;" />
-                </div>
+                    <div class="banner-item">
+                        <div class="slide">
+                            <img src="${bannerUrl.url}" class="slide-img" />
+                        </div>
+                        <div class="banner-controls">
+                            <span>ID: ${bannerUrl.id}</span>
+                            <button class="delete-banner" data-id="${bannerUrl.id}">Eliminar</button>
+                        </div>
+                    </div>
                 `)
             })
 
-            slideContainer.slick({
-                autoplay: true,
-                autoplaySpeed: 5000,
-                fade: false,
-                cssEase: 'ease',
-                arrows: false,
-                infinite: true,
-                draggable: false,
-                swipe: false,
-                touchMove: false,
-                pauseOnFocus: false,
-                pauseOnHover: false,
-                pauseOnDotsHover: false,
+            $('.delete-banner').click(function() {
+                const bannerId = $(this).data('id')
+                eliminarBanner(bannerId)
             })
-    }
 
-    const agregarBanner = async () => {
-        const imagenUrl = $('#imagenUrl').val().trim()
-
-        if (!imagenUrl) {
-            mostrarMensaje('Por favor, ingresa una URL válida', 'error')
-            return
+            if (bannersUrl.length > 0) {
+                slideContainer.slick({
+                    autoplay: true,
+                    autoplaySpeed: 5000,
+                    fade: false,
+                    cssEase: 'ease',
+                    arrows: false,
+                    infinite: true,
+                    draggable: false,
+                    swipe: false,
+                    touchMove: false,
+                    pauseOnFocus: false,
+                    pauseOnHover: false,
+                    pauseOnDotsHover: false,
+                })
+            }
         }
 
-        const respuesta = await fetch(`/api/agregar`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ imagenUrl }),
+        const eliminarBanner = async (id) => {
+            if (!confirm('¿Estás seguro de que deseas eliminar este banner?')) {
+                return;
+            }
+
+            const respuesta = await fetch(`/api/banners/${id}`, { method: 'DELETE' })
+            const resultado = await respuesta.json()
+
+            if (respuesta.ok) {
+                mostrarMensaje('Banner eliminado con éxito', 'success')
+            } else {
+                mostrarMensaje(resultado.error || 'Error al eliminar el banner', 'error')
+            }
+        }
+
+        const agregarBanner = async () => {
+            const imagenUrl = $('#imagenUrl').val().trim()
+
+            if (!imagenUrl) {
+                mostrarMensaje('Por favor, ingresa una URL válida', 'error')
+                return
+            }
+
+            const respuesta = await fetch(`/api/agregar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ imagenUrl }),
+            })
+
+            const resultado = await respuesta.json()
+
+            if (respuesta.ok) {
+                mostrarMensaje('Banner agregado con éxito', 'success')
+                $('#imagenUrl').val('')
+                $('.slide-banners-container').empty()
+                cambiarImagen()
+            } else {
+                mostrarMensaje(resultado.error || 'Error al agregar el banner', 'error')
+            }
+        }
+
+        const mostrarMensaje = (mensaje, tipo) => {
+            const contenedorMensaje = $('#contenedorMensaje')
+            contenedorMensaje.text(mensaje)
+            contenedorMensaje.removeClass('success error').addClass(tipo)
+
+            setTimeout(() => {
+                contenedorMensaje.text('')
+                contenedorMensaje.removeClass('success error')
+            }, 5000)
+        }
+
+        $('#agregarBanner').click(agregarBanner)
+
+        $('#imagenUrl').keypress(e => {
+            if (e.key === 'Enter') {
+                agregarBanner()
+            }
         })
 
-        const resultado = await respuesta.json()
-        
-        if(respuesta.ok) {
-            mostrarMensaje('Banner agregado con éxito', 'success')
-            $('#imagenUrl').val('')
-            $('.slide-banners-container').empty()
-            cambiarImagen()
-        } else {
-            mostrarMensaje(resultado.error || 'Error al agregar el banner', 'error')
-        }
-    }
-
-    const mostrarMensaje = (mensaje, tipo) => {
-        const contenedorMensaje = $('#contenedorMensaje')
-        contenedorMensaje.text(mensaje)
-        contenedorMensaje.removeClass('success error').addClass(tipo)
-
-        setTimeout(() => {
-            contenedorMensaje.text('')
-            contenedorMensaje.removeClass('success error')
-        }, 5000)
-    }
-
-    $('#agregarBanner').click(agregarBanner)
-
-    $('#imagenUrl').keypress(e => {
-        if (e.key === 'Enter') {
-            agregarBanner()
-        }
-    })
-
-
-    cambiarImagen()
+        cambiarImagen()
     </script>
 </body>
+
 </html>
