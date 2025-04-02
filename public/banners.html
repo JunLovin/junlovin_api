@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banners</title>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .slide-banners-container {
+            position: relative;
+            width: 340px;
+            height: 120px;
+            overflow: hidden;
+            margin-right: 175px;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="slide-banners-container"></div>
+
+    <script>
+        const cambiarImagen = async () => {
+            const respuesta = await fetch(`/api/banners`, { method: 'GET' })
+            const bannersUrl = await respuesta.json()
+            const slideContainer = $('.slide-banners-container')
+
+            bannersUrl.forEach(bannerUrl => {
+                return slideContainer.append(`
+                <div class="slide">
+                    <img src="${bannerUrl}" class="slide-img" />
+                </div>
+                `)
+            })
+
+            slideContainer.slick({
+                autoplay: true,
+                autoplaySpeed: 5000,
+                fade: false,
+                cssEase: 'ease',
+                arrows: false,
+                infinite: true,
+                draggable: false,
+                swipe: false,
+                touchMove: false,
+                pauseOnFocus: false,
+                pauseOnHover: false,
+                pauseOnDotsHover: false,
+            })
+    }
+        cambiarImagen();
+    </script>
+</body>
+</html>
