@@ -62,6 +62,8 @@ Integrar JunLovin API con OBS es muy sencillo:
 
 Para ver JunLovin API en acción, mira este video de demostración:
 
+https://github.com/user-attachments/assets/c8cdd4bf-a3ca-43b6-8d5f-23cedc8dfd89
+
 ## 🛠️ Requisitos técnicos
 
 - Node.js
